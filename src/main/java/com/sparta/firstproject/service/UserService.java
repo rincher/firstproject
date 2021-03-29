@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -34,7 +36,16 @@ public class UserService {
     }
 
     public User registerUser(SignupRequestDto requestDto) {
+        String regex = "^[A-Za-z]\\w{2,}$";
+        Pattern p = Pattern.compile(regex);
         String username = requestDto.getUsername();
+        Matcher m = p.matcher(username);
+
+        if (!m.matches()){
+            throw new IllegalArgumentException("잘못된 아이디");
+        }
+
+        System.out.println(username.length());
         // 회원 ID 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
