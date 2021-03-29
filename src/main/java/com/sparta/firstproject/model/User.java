@@ -13,18 +13,16 @@ import javax.validation.constraints.Size;
 @Entity // DB 테이블 역할을 합니다.
 public class User extends Timestamped {
 
-    public User(String username, String password, String email, UserRole role) {
+    public User(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
-        this.email = email;
         this.role = role;
         this.kakaoId = null;
     }
 
-    public User(String username, String password, String email, UserRole role, Long kakaoId) {
+    public User(String username, String password, UserRole role, Long kakaoId) {
         this.username = username;
         this.password = password;
-        this.email = email;
         this.role = role;
         this.kakaoId = kakaoId;
     }
@@ -40,9 +38,6 @@ public class User extends Timestamped {
 
     @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private String email;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)

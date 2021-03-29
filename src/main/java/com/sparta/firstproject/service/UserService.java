@@ -43,7 +43,6 @@ public class UserService {
 
         // 패스워드 인코딩
         String password = passwordEncoder.encode(requestDto.getPassword());
-        String email = requestDto.getEmail();
         // 사용자 ROLE 확인
         UserRole role = UserRole.USER;
         if (requestDto.isAdmin()) {
@@ -53,7 +52,7 @@ public class UserService {
             role = UserRole.ADMIN;
         }
 
-        User user = new User(username, password, email, role);
+        User user = new User(username, password, role);
         userRepository.save(user);
         return user;
     }
@@ -63,8 +62,6 @@ public class UserService {
         KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(authorizedCode);
         Long kakaoId = userInfo.getId();
         String nickname = userInfo.getNickname();
-        String email = userInfo.getEmail();
-
         // 우리 DB 에서 회원 Id 와 패스워드
         // 회원 Id = 카카오 nickname
         String username = nickname;
@@ -77,19 +74,12 @@ public class UserService {
 
         // 카카오 정보로 회원가입
         if (kakaoUser == null) {
-            // DB에 중복된 email이 있는지 확인
-            User loginEmail = userRepository.findByEmail(email).orElse(null);
-            if(loginEmail != null){
-                kakaoUser = loginEmail;
-                kakaoUser.setKakaoId(kakaoId);
-                userRepository.save(kakaoUser);
-            }
             // 패스워드 인코딩
             String encodedPassword = passwordEncoder.encode(password);
             // ROLE = 사용자
             UserRole role = UserRole.USER;
 
-            kakaoUser = new User(nickname, encodedPassword, email, role, kakaoId);
+            kakaoUser = new User(nickname, encodedPassword, role, kakaoId);
             userRepository.save(kakaoUser);
         }
 
