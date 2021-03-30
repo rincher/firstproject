@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <meta charset="UTF-8">
@@ -14,8 +14,8 @@
             integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
             crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap" rel="stylesheet">
-    <script src="basic.js"></script>
-    <link href="css/basic.css" rel="stylesheet">
+    <script src="/basic.js"></script>
+    <link href="/css/basic.css" rel="stylesheet">
 </head>
 
 <body>
@@ -31,13 +31,17 @@
     <nav id="navbar-example2" class="navbar navbar-light bg-light">
         <img src="https://pbs.twimg.com/profile_images/1094823834451103744/BCHmufYd_400x400.jpg" width="30"
              height="30" class="d-inline-block align-top" alt="">
-        <a class="navbar-brand" href="index.html">WUT</a>
+        <a class="navbar-brand" href="/">WUT</a>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link" href="index.html">메인 페이지</a>
+                <a class="nav-link" href="/">메인 페이지</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="boardwrite.html">글쓰기</a>
+                <a class="nav-link" href="/board/write">글쓰기</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:unless="${#authorization.expr('isAuthenticated()')}" href="/user/login">로그인</a>
+                <a class="nav-link" th:if="${#authorization.expr('isAuthenticated()')}" href="/user/logout">로그아웃</a>
             </li>
         </ul>
     </nav>
@@ -47,9 +51,6 @@
         <div class="col">
             <input class="form-control mb-2" type="text" placeholder="제목을 입력해주세요" id="title">
         </div>
-        <div class="col">
-            <input class="form-control mb-2" type="text" placeholder="이름을 입력해주세요" id="name">
-        </div>
     </div>
     <div class="row">
         <div class="col">
@@ -58,7 +59,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <button class="btn btn-danger" onclick="writePost()">작성하기</button>
+            <button class="btn btn-danger" th:onclick="writePost([[${username}]]);">작성하기</button>
         </div>
     </div>
 </div>

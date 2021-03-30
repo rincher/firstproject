@@ -7,6 +7,5 @@ import lombok.Getter;
 @Getter
 public class KakaoUserInfo {
     Long id;
-    String email;
     String nickname;
 }

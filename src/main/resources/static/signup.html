@@ -38,9 +38,11 @@
 
         <div class="login-id-label">Password</div>
         <input type="password" name="password" class="login-input-box">
+        <div th:if="${message} == '잘못된 비밀번호'" class="alert alert-danger" role="alert">비밀번호는 4자리 이상, 아이디 사용 불가</div>
 
         <div class="login-id-label">Passwork check</div>
-        <input type="password" name="password_check" class="login-input-box">
+        <input type="password" name="password_checker" class="login-input-box">
+        <div th:if="${message} == '불일치'" class="alert alert-danger" role="alert">다시 확인해 주세요</div>
 
         <button id="login-id-submit">회원 가입</button>
     </form>

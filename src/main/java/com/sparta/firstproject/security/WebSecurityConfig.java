@@ -2,6 +2,7 @@ package com.sparta.firstproject.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,12 +31,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/","/basic.js").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/**" ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/user/login")
                 .loginProcessingUrl("/user/login")
                 .defaultSuccessUrl("/")
+                .failureUrl("/user/login/error")
                 .permitAll()
                 .and()
                 .logout()

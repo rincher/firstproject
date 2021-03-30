@@ -43,9 +43,8 @@ public class UserController {
             userService.registerUser(requestDto);
         }catch (IllegalArgumentException e){
             model.addAttribute("message", e.getMessage());
-//            model.addAttribute("idlenght", e.getMessage());
             return "signup";
         }
-        return "redirect:/";
+        return "redirect:/user/login";
     }
 }

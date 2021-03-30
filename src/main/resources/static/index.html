@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extra/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -36,22 +36,25 @@
     <nav id="navbar-example2" class="navbar navbar-light bg-light">
         <img src="https://pbs.twimg.com/profile_images/1094823834451103744/BCHmufYd_400x400.jpg" width="30"
              height="30" class="d-inline-block align-top" alt="">
-        <a class="navbar-brand" href="index.html">WUT</a>
+        <a class="navbar-brand" href="/">WUT</a>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link" href="index.html">메인 페이지</a>
+                <a class="nav-link" href="/">메인 페이지</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="boardwrite.html">글쓰기</a>
+                <a class="nav-link" href="/board/write" th:unless="${#authorization.expr('isAuthenticated()')}" th:onclick="alert('로그인이 필요합니다.')">글쓰기</a>
+                <a class="nav-link" href="/board/write" th:if="${#authorization.expr('isAuthenticated()')}">글쓰기</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/user/logout">로그아웃</a>
+                <a class="nav-link" th:unless="${#authorization.expr('isAuthenticated()')}" href="/user/login">로그인</a>
+                <a class="nav-link" th:if="${#authorization.expr('isAuthenticated()')}" href="/user/logout">로그아웃</a>
             </li>
         </ul>
     </nav>
 </nav>
 <div class="wrap">
-    <h1 class="con">게시글 목록</h1>
+    <h1 class="con">게시물 목록</h1>
+    <span sec:authorize-expr="isAuthenticated()" sec:authentication="name">Name</span>
     <section class="article-list table-common con">
         <table border="1">
             <thead>
@@ -61,7 +64,6 @@
                 <th>사용자 이름</th>
                 <th>작성 시간</th>
                 <th>수정 시간</th>
-
             </tr>
             </thead>
             <tbody id="comment">

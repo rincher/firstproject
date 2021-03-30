@@ -93,11 +93,10 @@ function addDetail(id, title, name, contents, modifiedAt, createdAt) {
     $(`#${id}-editarea`).hide();
 }
 
-function writePost() {
+function writePost(name) {
     title = $("#title").val();
-    name = $('#name').val();
     contents = $('#contents').val();
-    if (isvalid(contents, title,name) === false) {
+    if (isvalid(contents, title, name) === false) {
         return;
     }
     let data = {"title": title, "name": name, 'contents': contents};
@@ -172,6 +171,9 @@ function submitEdit(id){
         success: function(response){
             alert("메세지 변경에 성공하셨습니다.");
             window.location.reload();
+        },
+        error: function (response){
+            alert("다른 사용자 댓글을 수정할 수 없습니다.")
         }
     })
 }
