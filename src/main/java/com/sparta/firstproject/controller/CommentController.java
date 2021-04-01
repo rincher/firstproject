@@ -1,6 +1,5 @@
 package com.sparta.firstproject.controller;
 
-import com.sparta.firstproject.Dto.BoardRequestDto;
 import com.sparta.firstproject.Dto.CommentRequestDto;
 import com.sparta.firstproject.model.Comment;
 import com.sparta.firstproject.repository.CommentRepository;
@@ -8,7 +7,6 @@ import com.sparta.firstproject.security.UserDetailsImpl;
 import com.sparta.firstproject.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +27,7 @@ public class CommentController {
     public List<Comment> readComment(){return commentRepository.findAllByOrderByCreatedAtAsc();}
 
     @PutMapping("/api/comment/{id}")
-    public Long updateMemo(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+    public Long updateMemo(@PathVariable Long id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String postername = requestDto.getUsername();
         String loggedinuser = userDetails.getUsername();
         if (!postername.equals(loggedinuser)) {
@@ -43,7 +41,7 @@ public class CommentController {
         Optional<Comment> getComment = commentRepository.findById(id);
         Long posteruser = getComment.get().getUser().getId();
         Long loggedinuser = userDetails.getUser().getId();
-        if (posteruser == loggedinuser) {
+        if (posteruser.equals(loggedinuser)) {
             commentRepository.deleteById(id);
             return id;
         }
