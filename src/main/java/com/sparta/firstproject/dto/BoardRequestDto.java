@@ -9,7 +9,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 
 public class BoardRequestDto {
-    private final String name;
+    private final String username;
     private final String title;
     private final String contents;
 }
