@@ -8,7 +8,7 @@ function getMessage() {
                 let board = response[i];
                 let id = board.id;
                 let title = board.title;
-                let name = board.name;
+                let name = board.username;
                 let modifiedAt = board.modifiedAt;
                 let createdAt = board.createdAt;
                 addHTML(id, title, name, modifiedAt, createdAt)
@@ -19,8 +19,8 @@ function getMessage() {
 }
 
 function addHTML(id, name, title, modifiedAt, createdAt) {
-    let tempHtml = `<tr onclick="getDetail(${id})">
-                <td>${id}</td>
+    let tempHtml = `<tr>
+                <td><a href="/board/${id}">${id}</a></td>
                 <td>${name}</td>
                 <td>${title}</td>
                 <td>${createdAt}</td>
@@ -28,10 +28,8 @@ function addHTML(id, name, title, modifiedAt, createdAt) {
     $('#comment').append(tempHtml);
 }
 
-function getDetail(id) {
-    $('#comment-detail').empty();
-    var con = document.getElementById("comment-detail")
-    if (con.style.display === 'none') {
+function getDetail(id, username) {
+    $('#board_detail').empty();
         $.ajax({
             type: "GET",
             url: `/api/boards/${id}`,
@@ -39,18 +37,13 @@ function getDetail(id) {
                 let board = response[0];
                 let id = board.id;
                 let title = board.title;
-                let name = board.name;
+                let name = board.username;
                 let contents = board.contents;
                 let modifiedAt = board.modifiedAt;
                 let createdAt = board.createdAt;
-                con.style.display = 'block';
                 addDetail(id, title, name, contents, modifiedAt, createdAt)
             }
         })
-    }
-    else{
-        con.style.display = 'none'
-    }
 }
 function addDetail(id, title, name, contents, modifiedAt, createdAt) {
     let temp_html = `<div class="card">
@@ -83,13 +76,13 @@ function addDetail(id, title, name, contents, modifiedAt, createdAt) {
                                 </table>
                             </section>
                             <div class="footer">
-                                <img id="${id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editPost('${id}')">
-                                <img id="${id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="deleteOne('${id}')">
-                                <img id="${id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${id}')">
+                                <img id="${id}-edit" class="icon-start-edit" src="/images/edit.png" alt="" onclick="editPost('${id}')">
+                                <img id="${id}-delete" class="icon-delete" src="/images/delete.png" alt="" onclick="deleteOne('${id}')">
+                                <img id="${id}-submit" class="icon-end-edit" src="/images/done.png" alt="" onclick="submitEdit('${id}')">
                             </div>
                         </div>
                     </div>`
-    $('#comment-detail').append(temp_html);
+    $('#board_detail').append(temp_html);
     $(`#${id}-editarea`).hide();
 }
 
@@ -173,18 +166,26 @@ function submitEdit(id){
             window.location.reload();
         },
         error: function (response){
-            alert("다른 사용자 댓글을 수정할 수 없습니다.")
+            alert("다른 사용자 게글을 수정할 수 없습니다.")
         }
     })
 }
 
 function deleteOne(id){
+    let name = $(`#${id}-name`).text().trim();
+    let contents = $(`#${id}-textarea`).val().trim();
+    let title = $(`#${id}-title`).text().trim();
+    let data = {'name':name, 'contents':contents, 'title':title};
     $.ajax({
         type : "DELETE",
         url : `/api/boards/${id}`,
+        data : JSON.stringify(data),
         success : function(response){
             alert("메세지 삭제 성공하였습니다.");
             window.location.reload();
+        },
+        error: function (response){
+            alert("다른 사용자 게시글을 삭제 하실 수 없습니다.")
         }
     })
 }

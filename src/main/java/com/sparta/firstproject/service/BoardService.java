@@ -3,8 +3,10 @@ package com.sparta.firstproject.service;
 
 import com.sparta.firstproject.model.Board;
 import com.sparta.firstproject.repository.BoardRepository;
-import com.sparta.firstproject.dto.BoardRequestDto;
+import com.sparta.firstproject.Dto.BoardRequestDto;
+import com.sparta.firstproject.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,5 +23,11 @@ public class BoardService {
         );
         board.update(requestDto);
         return board.getId();
+    }
+    @Transactional
+    public Board writeBoard(BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        Board board = new Board(requestDto, userDetails.getUsername());
+        boardRepository.save(board);
+        return board;
     }
 }

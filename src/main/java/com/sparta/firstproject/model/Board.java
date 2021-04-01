@@ -1,22 +1,23 @@
 package com.sparta.firstproject.model;
 
-import com.sparta.firstproject.dto.BoardRequestDto;
+import com.sparta.firstproject.Dto.BoardRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
 
 public class Board extends Timestamped{
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
     @Column(nullable = false)
     private String title;
@@ -24,22 +25,20 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String contents;
 
-
-    public Board(String name, String contents, String title){
-        this.name = name;
-        this.contents = contents;
-        this.title = title;
-    }
-
-    public Board(BoardRequestDto requestDto){
-        this.name = requestDto.getName();
+    public Board(BoardRequestDto requestDto, String username){
+        this.username = username;
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 
     public void update(BoardRequestDto requestDto){
-        this.name = requestDto.getName();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+    @ManyToMany
+    private List<Comment> commentList;
+
+    public void addComment(Comment comment){
+        this.commentList.add(comment);
     }
 }

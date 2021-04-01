@@ -1,4 +1,4 @@
-package com.sparta.firstproject.dto;
+package com.sparta.firstproject.Dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
