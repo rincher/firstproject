@@ -10,7 +10,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -38,21 +40,19 @@ public class BoardController {
     }
 
     @DeleteMapping("/api/boards/{id}")
-    public Long deleteMemo(@PathVariable Long id, @RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String postername = requestDto.getName();
-        String loggedinuser= userDetails.getUsername();
-        System.out.println(postername);
-        System.out.println(loggedinuser);
-        if (!postername.equals(loggedinuser)) {
-            throw new IllegalArgumentException("wronguser");
-        }
-        boardRepository.deleteById(id);
-        return id;
+    public Long deleteMemo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+       Optional<Board> getBoard = boardRepository.findById(id);
+       Long loggedinuser = userDetails.getUser().getId();
+       Long posteruser = getBoard.get().getUserId();
+       if (loggedinuser == posteruser){
+           boardRepository.deleteById(id);
+           return id;}
+       throw new IllegalArgumentException("다른 사용자 댓글을 삭제 하실 수 없습니다");
     }
 
     @PutMapping("/api/boards/{id}")
     public Long updateMemo(@PathVariable Long id, @RequestBody BoardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        String postername = requestDto.getName();
+        String postername = requestDto.getUsername();
         String loggedinuser = userDetails.getUsername();
         if (!postername.equals(loggedinuser)) {
             throw new IllegalArgumentException("wronguser");

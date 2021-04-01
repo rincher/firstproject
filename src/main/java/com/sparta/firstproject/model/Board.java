@@ -17,6 +17,9 @@ public class Board extends Timestamped{
     private Long id;
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false)
@@ -25,19 +28,19 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String contents;
 
-    public Board(BoardRequestDto requestDto, String username){
-        this.username = username;
+    @ManyToMany
+    private List<Comment> commentList;
+
+    public Board(BoardRequestDto requestDto, Long userId){
+        this.userId = userId;
+        this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
 
     public void update(BoardRequestDto requestDto){
-        this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
-    @ManyToMany
-    private List<Comment> commentList;
-
     public void addComment(Comment comment){
         this.commentList.add(comment);
     }

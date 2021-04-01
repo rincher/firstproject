@@ -4,6 +4,7 @@ function getMessage() {
         type: "GET",
         url: "/api/boards",
         success: function (response) {
+            console.log(response)
             for (let i = 0; response.length; i++) {
                 let board = response[i];
                 let id = board.id;
@@ -13,7 +14,6 @@ function getMessage() {
                 let createdAt = board.createdAt;
                 addHTML(id, title, name, modifiedAt, createdAt)
             }
-
         }
     })
 }
@@ -28,24 +28,25 @@ function addHTML(id, name, title, modifiedAt, createdAt) {
     $('#comment').append(tempHtml);
 }
 
-function getDetail(id, username) {
+function getDetail(id) {
     $('#board_detail').empty();
         $.ajax({
             type: "GET",
             url: `/api/boards/${id}`,
             success: function (response) {
                 let board = response[0];
+                let userid = board.userId;
                 let id = board.id;
                 let title = board.title;
                 let name = board.username;
                 let contents = board.contents;
                 let modifiedAt = board.modifiedAt;
                 let createdAt = board.createdAt;
-                addDetail(id, title, name, contents, modifiedAt, createdAt)
+                addDetail(id, title, name, contents, modifiedAt, createdAt, userid)
             }
         })
 }
-function addDetail(id, title, name, contents, modifiedAt, createdAt) {
+function addDetail(id, title, name, contents, modifiedAt, createdAt, userid) {
     let temp_html = `<div class="card">
                         <div class="card-body">
                             <section class="article-detail table-common con row">
@@ -55,6 +56,8 @@ function addDetail(id, title, name, contents, modifiedAt, createdAt) {
                                     </colgroup>
                                     <tbody>
                                         <tr class="article-title">
+                                            <th>id</th>
+                                            <td colspan="3" id="board-id">${id}</td>
                                             <th>제목</th>
                                             <td colspan="3" id="${id}-title">${title}</td>
                                             <th>작성자</th>
@@ -65,6 +68,7 @@ function addDetail(id, title, name, contents, modifiedAt, createdAt) {
                                             <td colspan="3">${createdAt}</td>
                                             <th>수정일</th>
                                             <td colspan="3">${modifiedAt}</td>
+                                            <td hidden id="user_id">${userid}</td>
                                         </tr>
                                         <tr class="article-body">
                                             <td colspan="3" id="${id}-contents" class="text">${contents}</td>
@@ -86,13 +90,15 @@ function addDetail(id, title, name, contents, modifiedAt, createdAt) {
     $(`#${id}-editarea`).hide();
 }
 
-function writePost(name) {
+function writePost() {
+    name = $("#username").val();
+    console.log(name)
     title = $("#title").val();
     contents = $('#contents').val();
     if (isvalid(contents, title, name) === false) {
         return;
     }
-    let data = {"title": title, "name": name, 'contents': contents};
+    let data = {"title": title, "username": name, 'contents': contents};
     $.ajax({
         type: "POST",
         url: "/api/boards",
